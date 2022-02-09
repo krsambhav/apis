@@ -1,17 +1,18 @@
 const express = require('express');
 const axios = require('axios');
+
 const PORT = 5001;
 
 const app = express();
 
 app.get('/', (req,res) => {
-  res.send('<code>Online. <br><br> For list of commands, go to <a style="decoration:none; color:black" href="/help">/help</a></code>');
+  res.send('<code>Online. <br><br> For list of commands, go to <a style="decoration:none; color:black" href="/list">/list</a></code>');
 })
 
-app.get('/help', (req,res) => {
+app.get('/list', (req,res) => {
   const helpData = {
     "toss": "Outputs Heads / Tails",
-    "random": "Outputs 0 / 2",
+    "random": "Outputs 0 / 1",
     "random/<limit>": "Outputs a number between 0 and limit parameter",
     "chuck": "Outputs a Chuck Norris joke",
     "bored": "Random activiy",
@@ -55,25 +56,28 @@ app.get('/bored', (req, res) => {
 
 app.get('/btc', async (req, res) =>  {
   let resp;
+  let usdToInrRate;
   await axios.get('https://api.coindesk.com/v1/bpi/currentprice.json')
   .then(response => {
     resp = response.data;
   }).catch(error => {
     res.json(error)
   })
+  await axios.get("https://v6.exchangerate-api.com/v6/5cf630bde0c6001f0b61848d/latest/USD")
+    .then(response => {
+      usdToInrRate = response.data.conversion_rates.INR;
+    })
   const data = {
     "Cryptocurrency Name": "Bitcoin",
     "Current Rate" : {
       "USD $" : Number.parseInt((resp.bpi.USD.rate).replace(',','')),
       "GBP £" : Number.parseInt((resp.bpi.GBP.rate).replace(',','')),
       "EUR €" : Number.parseInt((resp.bpi.EUR.rate).replace(',','')),
-      "INR ₹" : Number.parseInt((resp.bpi.USD.rate).replace(',','')) * 75
+      "INR ₹" : Number.parseInt(Number.parseInt((resp.bpi.USD.rate).replace(',','')) * usdToInrRate)
     }
   }
   res.json(data);
 })
-
-
 
 app.listen(PORT, () => {
   console.log('Listening On Port ' + PORT);
