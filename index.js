@@ -26,8 +26,8 @@ app.get('/toss', (req, res) => {
   res.json(num == 0 ? 'Heads' : 'Tails');
 })
 
-app.get('/random/', (req, res) => {
-  const num = Math.round(Math.random() * req.params['limit']);
+app.get('/random', (req, res) => {
+  const num = Math.round(Math.random());
   res.json(num);
 })
 
