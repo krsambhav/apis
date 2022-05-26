@@ -1,5 +1,6 @@
 const express = require('express');
 const axios = require('axios');
+const advices = require('./assets/advices.json').advices;
 
 const PORT = process.env.PORT || 5001;
 
@@ -45,6 +46,12 @@ app.get('/chuck', (req, res) => {
     })
 })
 
+app.get('/advice', (req, res) => {
+  const random = Math.floor(Math.random() * advices.length - 1);
+  console.log(random);
+  res.json(advices[random])
+})
+
 app.get('/bored', (req, res) => {
   axios.get('https://www.boredapi.com/api/activity')
     .then(response => {
@@ -73,7 +80,7 @@ app.get('/btc', async (req, res) =>  {
       "USD $" : Number.parseInt((resp.bpi.USD.rate).replace(',','')),
       "GBP £" : Number.parseInt((resp.bpi.GBP.rate).replace(',','')),
       "EUR €" : Number.parseInt((resp.bpi.EUR.rate).replace(',','')),
-      "INR ₹" : Number.parseInt(Number.parseInt((resp.bpi.USD.rate).replace(',','')) * usdToInrRate)
+      "INR ₹" : Number.parseInt((resp.bpi.USD.rate).replace(',','')) * usdToInrRate
     }
   }
   res.json(data);
