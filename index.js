@@ -17,7 +17,8 @@ app.get('/list', (req,res) => {
     "random/<limit>": "Outputs a number between 0 and limit parameter",
     "chuck": "Outputs a Chuck Norris joke",
     "bored": "Random activiy",
-    "btc": "Realtime Bitcoin rate"
+    "btc": "Realtime Bitcoin rate",
+    "advice": "Wise Advice"
   }
   res.json(helpData);
 })
