@@ -57,7 +57,10 @@ app.get('/bored', (req, res) => {
 
 app.get('/bins/:bin', async (req, res) => {
   const bin = req.params.bin;
-  res.json(binlist[bin])
+  if(bin in binlist)
+    res.json(binlist[bin])
+  else 
+    res.json('BIN Not Found In DB')
 })
 
 app.get('/btc', async (req, res) =>  {
