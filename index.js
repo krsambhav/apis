@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const advices = require('./assets/advices.json').advices;
+const binlist = require('./binlist.json')
 
 const PORT = process.env.PORT || 5001;
 
@@ -17,8 +17,7 @@ app.get('/list', (req,res) => {
     "random/<limit>": "Outputs a number between 0 and limit parameter",
     "chuck": "Outputs a Chuck Norris joke",
     "bored": "Random activiy",
-    "btc": "Realtime Bitcoin rate",
-    "advice": "Wise Advice"
+    "btc": "Realtime Bitcoin rate"
   }
   res.json(helpData);
 })
@@ -47,12 +46,6 @@ app.get('/chuck', (req, res) => {
     })
 })
 
-app.get('/advice', (req, res) => {
-  const random = Math.floor(Math.random() * advices.length - 1);
-  console.log(random);
-  res.json(advices[random])
-})
-
 app.get('/bored', (req, res) => {
   axios.get('https://www.boredapi.com/api/activity')
     .then(response => {
@@ -60,6 +53,11 @@ app.get('/bored', (req, res) => {
     }).catch(error => {
       res.json(error)
     })
+})
+
+app.get('/bins/:bin', async (req, res) => {
+  const bin = req.params.bin;
+  res.json(binlist[bin])
 })
 
 app.get('/btc', async (req, res) =>  {
@@ -81,11 +79,13 @@ app.get('/btc', async (req, res) =>  {
       "USD $" : Number.parseInt((resp.bpi.USD.rate).replace(',','')),
       "GBP £" : Number.parseInt((resp.bpi.GBP.rate).replace(',','')),
       "EUR €" : Number.parseInt((resp.bpi.EUR.rate).replace(',','')),
-      "INR ₹" : Number.parseInt((resp.bpi.USD.rate).replace(',','')) * usdToInrRate
+      "INR ₹" : Number.parseInt(Number.parseInt((resp.bpi.USD.rate).replace(',','')) * usdToInrRate)
     }
   }
   res.json(data);
 })
+
+
 
 app.listen(PORT, () => {
   console.log('Listening On Port ' + PORT);
